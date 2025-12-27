@@ -1,0 +1,41 @@
+--- PIPELINE ---
+1. .wav or .mp3 input
+    - for mp3 use minimp3
+2. generate an array of the amplitude for each sample
+    - using minimp3
+3. perform fft on the sample
+4. translate the frequencies extracted by fft to a musical note
+5. find when the note was played relative to a beat
+6. transcribe
+
+--- DIAGRAMME ---
+auto-transcribe/
+    include/
+        input-handler.h
+        freq-analysis.h
+        music-analysis.h
+        beat-analysis.h
+        transcriber.h
+    src/
+        input-handler.c
+        freq-analysis.c
+        music-analysis.c
+        beat-analysis.c
+        transcriber.h
+
+--- MODULES ---
+    INPUT HANDLER
+        minimp3 to generate samples
+    FREQ ANALYSER
+        generates frequencies given samples
+    MUSIC ANALYSER
+        generates the notes from given frequencies
+    BEAT ANALYSER
+        discoveres when beats land
+    TIME ANALYSER
+        discovers where the notes land relative to the beat
+    TRANSCRIBER
+        writes the transcribed music to some format
+    (TENTATIVE) INTERACTIVES
+        somehow generates this in a more common form (musical notation, etc)
+
