@@ -11,9 +11,20 @@
  * @param samples       array of samples
  * @param length        number of elements in samples array
  *
- * @return a new array of type fftw_complex to use for fftw3 input
+ * @return a new array of type fftw_complex to use for fftw3
  */
-fftw_complex *generate_input(double *samples, uint64_t length);
+fftw_complex *real_to_complex(double *samples, uint64_t length);
+
+/**
+ * Returns an array of the magnitudes of each frequency wave
+ *
+ * @param freq          array of frequencies of type fftw_complex
+ * @param length        length of the freq array
+ *
+ * @return an array with each element storing the magnitude of its
+ * corresponding freq
+ */
+double *complex_to_real_magnitude(fftw_complex *freq, uint64_t length);
 
 /**
  * Extracts the frequencies and phases of the signal

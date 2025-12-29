@@ -24,7 +24,9 @@ int sample_file(char *file_name, audio_buffer_t *audio_buffer) {
 
     //  COLLECT WAVEFORM DATA
     ma_uint64 frames;
+    ma_uint32 channels;
     ma_decoder_get_length_in_pcm_frames(&decoder, &frames);
+    channels = decoder.outputChannels;
 
     float *samples_float = malloc(frames * decoder.outputChannels * sizeof(float));
     double *samples_double = malloc(frames * decoder.outputChannels * sizeof(double));
@@ -38,7 +40,8 @@ int sample_file(char *file_name, audio_buffer_t *audio_buffer) {
     ma_decoder_read_pcm_frames(&decoder, samples_float, frames, NULL);
     ma_decoder_uninit(&decoder);
 
-    for (ma_uint64 i = 0; i < frames; i++) {
+    //  TRANSLATE FLOAT DATA TO DOUBLE
+    for (ma_uint64 i = 0; i < frames * channels; i++) {
         samples_double[i] = (double) samples_float[i];
     }
 
@@ -71,6 +74,8 @@ int convert_to_mono(audio_buffer_t *audio_buffer) {
     free(audio_buffer->samples_double);
     audio_buffer->samples_float = new_float;
     audio_buffer->samples_double = new_double;
+
+    audio_buffer->channel_count = 1;
 
     return 0;
 }
