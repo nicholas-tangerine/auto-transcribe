@@ -2,8 +2,9 @@
 1. .wav or .mp3 input
     - for mp3 use minimp3
 2. generate an array of the amplitude for each sample
-    - using minimp3
+    - using miniaudio
 3. perform fft on the sample
+    - using fftw3
 4. translate the frequencies extracted by fft to a musical note
 5. find when the note was played relative to a beat
 6. transcribe

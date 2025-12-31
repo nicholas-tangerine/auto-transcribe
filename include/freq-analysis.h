@@ -27,6 +27,15 @@ fftw_complex *real_to_complex(double *samples, uint64_t length);
 double *complex_to_real_magnitude(fftw_complex *freq, uint64_t length);
 
 /**
+ * Filters out all noise. Any spectral leakage, etc. will be set to 0 and only the "real" notes will still have any amplitude. "Real" note amplitude is unchanged.
+ *
+ * @param freq          array of frequencies and their associated amplitudes
+ * @param window_size   size of window for finding local maximum of amplitudes
+ * @param length        the length of the frequency array
+ */
+void denoise_freq(double *freq, uint64_t window_size, uint64_t length);
+
+/**
  * Extracts the frequencies and phases of the signal
  * Requires that freq and phase are of the proper length, not checked in this
  * function
@@ -36,10 +45,8 @@ double *complex_to_real_magnitude(fftw_complex *freq, uint64_t length);
  * @param window_size   size of window upon which FFT is performed, equivalent
  *                      to N in fftw docs
  * @param freq          pointer to output array, to be updated with freq
- * @param phase         pointer to output array, to be filled with the phase of
- *                      various frequencies
  */
-void extract_freq_phase(double *samples, uint64_t length, uint64_t window_size,
-        double *freq, double *phase);
+void extract_freq(double *samples, uint64_t length, uint64_t window_size,
+        double *freq);
 
 #endif //   FREQ_ANALYSIS_H_

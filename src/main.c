@@ -15,17 +15,20 @@ int main(int argc, char **argv) {
     sample_file(argv[1], audio_buffer);
     convert_to_mono(audio_buffer);
 
-    printf("FRAME COUNT: %ld\nCHANNEL COUNT: %d\nSAMPLE RATE: %d\n", audio_buffer->frame_count, audio_buffer->channel_count, audio_buffer->sample_rate);
-    
-    int nbins = (audio_buffer->sample_rate >> 1) + 1;
+    printf("FRAME COUNT: %ld\nCHANNEL COUNT: %d\nSAMPLE RATE: %d\n",
+            audio_buffer->frame_count, audio_buffer->channel_count,
+            audio_buffer->sample_rate);
+
+    uint64_t nbins = (audio_buffer->sample_rate >> 1) + 1;
     double *freq = malloc(sizeof(double) * nbins);
-    double *phase = malloc(sizeof(double) * nbins);
-    extract_freq_phase(audio_buffer->samples_double, audio_buffer->frame_count,
-            audio_buffer->sample_rate, freq, phase);
+
+    extract_freq(audio_buffer->samples_double, audio_buffer->frame_count,
+            audio_buffer->sample_rate, freq);
+
+    denoise_freq(freq, 20, nbins);
 
     for (uint64_t i = 0; i < nbins; i++) {
-        double analysis_freq = (double) i;
-        printf("Hz: %08.4f \t Amplitude: %.4f\n", (double) i, freq[i]);
+        printf("Hz: %08.4f \t Amplitude: %08.4f\n", (double) i, freq[i]);
     }
 
     return 0;
