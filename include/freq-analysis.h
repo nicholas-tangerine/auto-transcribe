@@ -16,7 +16,8 @@
 fftw_complex *real_to_complex(double *samples, uint64_t length);
 
 /**
- * Returns an array of the magnitudes of each frequency wave
+ * Returns an array of the magnitudes of each frequency wave. To be freed by
+ * user
  *
  * @param freq          array of frequencies of type fftw_complex
  * @param length        length of the freq array
@@ -27,7 +28,9 @@ fftw_complex *real_to_complex(double *samples, uint64_t length);
 double *complex_to_real_magnitude(fftw_complex *freq, uint64_t length);
 
 /**
- * Filters out all noise. Any spectral leakage, etc. will be set to 0 and only the "real" notes will still have any amplitude. "Real" note amplitude is unchanged.
+ * Filters out all noise. Any spectral leakage, etc. will be set to 0 and only
+ * the "real" notes will still have any amplitude. "Real" note amplitude is
+ * unchanged.
  *
  * @param freq          array of frequencies and their associated amplitudes
  * @param window_size   size of window for finding local maximum of amplitudes
@@ -36,9 +39,8 @@ double *complex_to_real_magnitude(fftw_complex *freq, uint64_t length);
 void denoise_freq(double *freq, uint64_t window_size, uint64_t length);
 
 /**
- * Extracts the frequencies and phases of the signal
- * Requires that freq and phase are of the proper length, not checked in this
- * function
+ * Extracts the frequencies and phases of the signal. Requires that freq and
+ * phase are of the proper length, not checked in this function
  *
  * @param samples       array of samples
  * @param length        number of elements in samples array

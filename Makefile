@@ -7,7 +7,8 @@ BUILD_DIR 	:= build
 
 SRC     	:= main.c \
 				   input-handler.c \
-				   freq-analysis.c
+				   freq-analysis.c \
+				   music-analysis.c
 OBJ 		:= $(SRC:%.c=$(BUILD_DIR)/%.o)
 TARGET  	:= main
 

@@ -7,7 +7,7 @@
  *
  * @param freq      the frequency to translate into a musical note
  *
- * @return the distance from A0 of the note. A0 = 0 and Bb0 = 1, etc.
+ * @return the distance from A0 of the note. A0 = 0 and A#/Bb0 = 1,... etc.
  */
 int freq_to_note(double freq);
 
