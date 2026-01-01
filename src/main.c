@@ -5,7 +5,7 @@
 #include "freq-analysis.h"
 #include "music-analysis.h"
 
-const int FFTW_WINDOW = 8192;
+const uint64_t FFTW_WINDOW = 44100;
 const char *NOTE_NAMES[] = {"A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab"};
 
 int main(int argc, char **argv) {
@@ -20,11 +20,11 @@ int main(int argc, char **argv) {
     convert_to_mono(audio_buffer);
 
     /* Extract and denoise frequencies from the first second of the mp3 */
-    uint64_t nbins = (audio_buffer->sample_rate >> 1) + 1;
+    uint64_t nbins = (FFTW_WINDOW >> 1) + 1;
     double *freq = malloc(sizeof(double) * nbins);
 
-    extract_freq(audio_buffer->samples_double, audio_buffer->frame_count,
-            audio_buffer->sample_rate, freq);
+    extract_freq_window(audio_buffer->samples_double, audio_buffer->frame_count,
+            FFTW_WINDOW, freq);
     denoise_freq(freq, 5, nbins);
 
     /* Print frequency data in a human readable format */
@@ -35,7 +35,8 @@ int main(int argc, char **argv) {
     for (uint64_t i = 0; i < nbins; i++) {
         if (freq[i] == 0.0) continue;
         int note_val = freq_to_note(i);
-        printf("Hz: %f \t Amplitude: %f \t Note: %s\n", (double) i, freq[i], note_val > 0 ? NOTE_NAMES[note_val % 12] : "unknown");
+        if (note_val < 0) continue;
+        printf("Hz: %f \t Amplitude: %f \t Note: %s\n", (double) i, freq[i], NOTE_NAMES[note_val % 12]);
     }
 
     return 0;

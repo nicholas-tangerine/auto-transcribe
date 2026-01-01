@@ -14,15 +14,19 @@ auto-transcribe/
     include/
         input-handler.h
         freq-analysis.h
+        pitch-tracker.h
         music-analysis.h
         beat-analysis.h
+        time-analysis.h
         transcriber.h
     src/
         input-handler.c
         freq-analysis.c
+        pitch-tracker.c
         music-analysis.c
         beat-analysis.c
-        transcriber.h
+        time-analysis.c
+        transcriber.c
 
 --- MODULES ---
     INPUT HANDLER

@@ -51,7 +51,7 @@ void denoise_freq(double *freq, uint64_t window_size, uint64_t length) {
     free(new_freq);
 }
 
-void extract_freq(double *samples, uint64_t length, uint64_t window_size,
+void extract_freq_window(double *samples, uint64_t length, uint64_t window_size,
         double *freq) {
     fftw_complex *out = (fftw_complex *) fftw_malloc(sizeof(fftw_complex) * ((window_size >> 1) + 1));
 
@@ -59,9 +59,10 @@ void extract_freq(double *samples, uint64_t length, uint64_t window_size,
     fftw_execute(plan);
     fftw_destroy_plan(plan);
 
-    double *new_freq = complex_to_real_magnitude(out, window_size);
+    double *new_freq = complex_to_real_magnitude(out, (window_size >> 1) + 1);
     memcpy(freq, new_freq, sizeof(double) * ((window_size >> 1) + 1));
     free(new_freq);
+    fftw_free(out);
 
     return;
 }

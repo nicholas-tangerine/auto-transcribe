@@ -48,7 +48,7 @@ void denoise_freq(double *freq, uint64_t window_size, uint64_t length);
  *                      to N in fftw docs
  * @param freq          pointer to output array, to be updated with freq
  */
-void extract_freq(double *samples, uint64_t length, uint64_t window_size,
+void extract_freq_window(double *samples, uint64_t length, uint64_t window_size,
         double *freq);
 
 #endif //   FREQ_ANALYSIS_H_
