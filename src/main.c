@@ -26,6 +26,7 @@ int main(int argc, char **argv) {
     extract_freq_window(audio_buffer->samples_double, audio_buffer->frame_count,
             FFTW_WINDOW, freq);
     denoise_freq(freq, 5, nbins);
+    remove_harmonics(freq, 0, (double) (audio_buffer->sample_rate), nbins, 0.5, 0.0);
     double *notes = freq_to_note_arr(freq, 0, (double) nbins, nbins, 0.3, 88);
 
     /* Print frequency data in a human readable format */
@@ -34,6 +35,7 @@ int main(int argc, char **argv) {
     printf("SAMPLE RATE: %d\n", audio_buffer->sample_rate);
 
     for (int i = 0; i < 88; i++) {
+        if (notes[i] == 0.0) continue;
         printf("Note: %8s \t Note num: %3d \t Amplitude: %f\n", NOTE_NAMES[i % 12], i,  notes[i]);
     }
     /*

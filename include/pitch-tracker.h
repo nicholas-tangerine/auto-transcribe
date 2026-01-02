@@ -9,7 +9,6 @@
  * circular buffer, with a LRU replacement policy
  */
 typedef struct {
-    double **freq;          //  freq[frame][f] -> amplitude
     double **note;          //  note[frame][n] -> amplitude 
     bool *note_active;      //  note_active[frame][n] -> on/off
     uint64_t frame_count;   //  number of frames to keep histories of; treated as circular buffer
@@ -24,8 +23,7 @@ typedef struct {
  * @param freq_min          the frequency of the 0th frequency bin
  * @param freq_max          the frequency of the last frequency bin
  */
-pitch_tracker_t *pitch_tracker_init(uint64_t frame_count, uint64_t freq_len,
-        uint32_t freq_min, uint32_t freq_max);
+pitch_tracker_t *pitch_tracker_init(uint64_t frame_count);
 
 /**
  * Add a frequency representation array to the pitch tracker. 

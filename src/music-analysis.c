@@ -29,7 +29,7 @@ double *freq_to_note_arr(double *freq, double freq_min, double freq_max,
 
     for (uint32_t i = 0; i < freq_len; i++) {
         double analysis_freq = (double) freq_min + ((double) i * (double)
-                (freq_max - freq_min) / (double) freq_len);
+                (freq_max - freq_min) / (double) freq_len - 1.0);
         double analysis_amplitude = freq[i];
 
         double error = 0;

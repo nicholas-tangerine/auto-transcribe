@@ -55,6 +55,16 @@ void denoise_freq(double *freq, uint64_t window_size, uint64_t length) {
 
 void remove_harmonics(double *freq, double freq_min, double freq_max, uint64_t
         freq_len, double real_weight, double fake_weight) {
+    for (uint64_t i = 0; i < freq_len; i++) {
+        double base_freq = freq_min + i * (freq_max - freq_min) / (freq_len - 1);
+        int base_amplitude = freq[(int) round(base_freq)];
+        for (int u = 2; u < 11; u++) {
+            uint64_t check_freq = (int) round(base_freq * u);
+            if (check_freq >= freq_len) break;
+            if (freq[check_freq] >= real_weight * base_amplitude) continue;
+            freq[check_freq] *= fake_weight;
+        }
+    }
     return;
 }
 
