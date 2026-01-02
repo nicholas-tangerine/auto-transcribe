@@ -6,6 +6,7 @@ SRC_DIR 	:= src
 BUILD_DIR 	:= build
 
 SRC     	:= main.c \
+			   	   miniaudio.c \
 				   input-handler.c \
 				   freq-analysis.c \
 				   music-analysis.c

@@ -1,8 +1,11 @@
 #define MINIAUDIO_IMPLEMENTATION
 #define MA_NO_FLAC
 #define MA_NO_WAV
-#include "miniaudio.h"
 
+#include <stdlib.h>
+#include <stdio.h>
+
+#include "miniaudio.h"
 #include "input-handler.h"
 
 audio_buffer_t *audio_buffer_init() {

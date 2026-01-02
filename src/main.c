@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "input-handler.h"
 #include "freq-analysis.h"
@@ -36,7 +37,8 @@ int main(int argc, char **argv) {
 
     for (int i = 0; i < 88; i++) {
         if (notes[i] == 0.0) continue;
-        printf("Note: %8s \t Note num: %3d \t Amplitude: %f\n", NOTE_NAMES[i % 12], i,  notes[i]);
+        double frequency = 440.0 * pow(2.0, (i - 48.0) / 12);
+        printf("Note: %8s \t Note num: %3d \t Frequency: %4.4f \t Amplitude: %f\n", NOTE_NAMES[i % 12], i, frequency,  notes[i]);
     }
     /*
        for (uint64_t i = 0; i < nbins; i++) {
