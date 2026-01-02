@@ -37,4 +37,4 @@ int sample_file(char *file_name, audio_buffer_t *audio_buffer);
  */
 int convert_to_mono(audio_buffer_t *audio_buffer);
 
-#endif // INPUT_HANDLER_H
+#endif //   INPUT_HANDLER_H

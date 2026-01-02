@@ -30,13 +30,30 @@ double *complex_to_real_magnitude(fftw_complex *freq, uint64_t length);
 /**
  * Filters out all noise. Any spectral leakage, etc. will be set to 0 and only
  * the "real" notes will still have any amplitude. "Real" note amplitude is
- * unchanged.
+ * unchanged. This works by zeroing out everything EXCEPT the highest amplitude
+ * frequency in the window.
  *
  * @param freq          array of frequencies and their associated amplitudes
  * @param window_size   size of window for finding local maximum of amplitudes
  * @param length        the length of the frequency array
  */
 void denoise_freq(double *freq, uint64_t window_size, uint64_t length);
+
+/**
+ * Removes or downweights harmonics.
+ *
+ * @param freq          array of frequencies and their associated amplitudes
+ * @param freq_min      the lowest frequency in the freq array
+ * @param freq_max      the maximum frequency in the freq array
+ * @param freq_len      the length of the frequency array
+ * @param real_weight   if the harmonic is at least real_weight *
+ *                      analysis_amplitude, it is a real note
+ *                      harmonic (default 0.0)
+ * @param fake_weight   how loud the harmonic should be (default 0.0 means
+ *                      remove altogether)
+ */
+void remove_harmonics(double *freq, double freq_min, double freq_max, uint64_t
+        freq_len, double real_weight, double fake_weight);
 
 /**
  * Extracts the frequencies and phases of the signal. Requires that freq and

@@ -26,18 +26,26 @@ int main(int argc, char **argv) {
     extract_freq_window(audio_buffer->samples_double, audio_buffer->frame_count,
             FFTW_WINDOW, freq);
     denoise_freq(freq, 5, nbins);
+    double *notes = freq_to_note_arr(freq, 0, (double) nbins, nbins, 0.3, 88);
 
     /* Print frequency data in a human readable format */
     printf("FRAME COUNT: %ld\n", audio_buffer->frame_count);
     printf("CHANNEL COUNT: %d\n", audio_buffer->channel_count);
     printf("SAMPLE RATE: %d\n", audio_buffer->sample_rate);
 
-    for (uint64_t i = 0; i < nbins; i++) {
-        if (freq[i] == 0.0) continue;
-        int note_val = freq_to_note(i);
-        if (note_val < 0) continue;
-        printf("Hz: %f \t Amplitude: %f \t Note: %s\n", (double) i, freq[i], NOTE_NAMES[note_val % 12]);
+    for (int i = 0; i < 88; i++) {
+        printf("Note: %8s \t Note num: %3d \t Amplitude: %f\n", NOTE_NAMES[i % 12], i,  notes[i]);
     }
+    /*
+       for (uint64_t i = 0; i < nbins; i++) {
+    //if (freq[i] == 0.0) continue;
+    int note_val = freq_to_note(i, 0.3, NULL);
+    if (note_val < 0) continue;
+    //printf("%f %f\n", (double) i, freq[i]);
+    //printf("Hz: %f \t Amplitude: %f \t Note: %s\n", (double) i, freq[i], NOTE_NAMES[note_val % 12]);
+    //printf("Hz: %f \t Amplitude: %f \t Note: %s\n", (double) i, freq[i], note_val < 0 ? "unknown" : NOTE_NAMES[note_val % 12]);
+    }
+    */
 
     return 0;
 }

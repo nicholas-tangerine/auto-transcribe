@@ -49,6 +49,13 @@ void denoise_freq(double *freq, uint64_t window_size, uint64_t length) {
 
     memcpy(freq, new_freq, length * sizeof(double));
     free(new_freq);
+
+    return;
+}
+
+void remove_harmonics(double *freq, double freq_min, double freq_max, uint64_t
+        freq_len, double real_weight, double fake_weight) {
+    return;
 }
 
 void extract_freq_window(double *samples, uint64_t length, uint64_t window_size,

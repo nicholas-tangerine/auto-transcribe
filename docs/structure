@@ -6,6 +6,9 @@
 3. perform fft on the sample
     - using fftw3
 4. translate the frequencies extracted by fft to a musical note
+    - music-analyser
+    - pitch-tracker
+5. establish when the beats land
 5. find when the note was played relative to a beat
 6. transcribe
 
@@ -14,16 +17,16 @@ auto-transcribe/
     include/
         input-handler.h
         freq-analysis.h
-        pitch-tracker.h
         music-analysis.h
+        pitch-tracker.h
         beat-analysis.h
         time-analysis.h
         transcriber.h
     src/
         input-handler.c
         freq-analysis.c
-        pitch-tracker.c
         music-analysis.c
+        pitch-tracker.c
         beat-analysis.c
         time-analysis.c
         transcriber.c
@@ -35,6 +38,8 @@ auto-transcribe/
         generates frequencies given samples
     MUSIC ANALYSER
         generates the notes from given frequencies
+    PITCH TRACKER
+        generates the amplitudes of each note that is played
     BEAT ANALYSER
         discoveres when beats land
     TIME ANALYSER
