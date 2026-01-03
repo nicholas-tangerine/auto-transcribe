@@ -27,7 +27,7 @@ double *complex_to_real_magnitude(fftw_complex *freq, uint64_t length) {
     return out;
 }
 
-void denoise_freq(double *freq, uint64_t window_size, uint64_t length) {
+void denoise_freq(double *freq, uint64_t window_size, uint64_t length, double min_energy) {
     if (window_size > length) { fprintf(stderr, "DEBUG: window_size > length in denoise freq\n"); return; }
 
     double *new_freq = malloc(length * sizeof(double));
@@ -45,6 +45,7 @@ void denoise_freq(double *freq, uint64_t window_size, uint64_t length) {
             max_amplitude = freq[k];
             best_freq = k;
         }
+        if (max_amplitude < min_energy) new_freq[best_freq] = 0.0;
     }
 
     memcpy(freq, new_freq, length * sizeof(double));
@@ -54,15 +55,21 @@ void denoise_freq(double *freq, uint64_t window_size, uint64_t length) {
 }
 
 void remove_harmonics(double *freq, double freq_min, double freq_max, uint64_t
-        freq_len, double real_weight, double fake_weight) {
+        freq_len, double real_weight, double fake_weight, double alpha) {
     for (uint64_t i = 0; i < freq_len; i++) {
         double base_freq = freq_min + i * (freq_max - freq_min) / (freq_len - 1);
         int base_amplitude = freq[(int) round(base_freq)];
-        for (int u = 2; u < 11; u++) {
-            uint64_t check_freq = (int) round(base_freq * u);
-            if (check_freq >= freq_len) break;
-            if (freq[check_freq] >= real_weight * base_amplitude) continue;
-            freq[check_freq] *= fake_weight;
+
+        for (int u = 2; u < 20; u++) {      // harmonics
+            uint64_t check_freq_min = (int) round(base_freq * u) * (1 - alpha);
+            uint64_t check_freq_max = (int) round(base_freq * u) * (1 + alpha);
+            if (check_freq_min >= freq_len) break;
+
+            for (uint64_t j = check_freq_min; j <= check_freq_max; j++) {
+                if (j >= freq_len) break;
+                if (freq[j] >= real_weight * base_amplitude) continue;
+                freq[j] *= fake_weight;
+            }
         }
     }
     return;

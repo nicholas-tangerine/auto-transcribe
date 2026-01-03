@@ -36,8 +36,11 @@ double *complex_to_real_magnitude(fftw_complex *freq, uint64_t length);
  * @param freq          array of frequencies and their associated amplitudes
  * @param window_size   size of window for finding local maximum of amplitudes
  * @param length        the length of the frequency array
+ * @param min_energy    the minimum energy required to be considered a real
+ *                      note
  */
-void denoise_freq(double *freq, uint64_t window_size, uint64_t length);
+void denoise_freq(double *freq, uint64_t window_size, uint64_t length, double
+        min_energy);
 
 /**
  * Removes or downweights harmonics.
@@ -48,12 +51,14 @@ void denoise_freq(double *freq, uint64_t window_size, uint64_t length);
  * @param freq_len      the length of the frequency array
  * @param real_weight   if the harmonic is at least real_weight *
  *                      analysis_amplitude, it is a real note
- *                      harmonic (default 0.0)
+ *                      harmonic
  * @param fake_weight   how loud the harmonic should be (default 0.0 means
  *                      remove altogether)
+ * @param alpha         a measure of how many harmonics in a neighborhood
+ *                      should be downweighted (recommended: below 0.5)
  */
 void remove_harmonics(double *freq, double freq_min, double freq_max, uint64_t
-        freq_len, double real_weight, double fake_weight);
+        freq_len, double real_weight, double fake_weight, double alpha);
 
 /**
  * Extracts the frequencies and phases of the signal. Requires that freq and
@@ -65,7 +70,8 @@ void remove_harmonics(double *freq, double freq_min, double freq_max, uint64_t
  *                      to N in fftw docs
  * @param freq          pointer to output array, to be updated with freq
  */
-void extract_freq_window(double *samples, uint64_t length, uint64_t window_size,
+void extract_freq_window(double *samples, uint64_t length, uint64_t
+        window_size,
         double *freq);
 
 #endif //   FREQ_ANALYSIS_H_
