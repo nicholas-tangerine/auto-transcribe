@@ -12,11 +12,18 @@ typedef struct {
 } audio_buffer_t;
 
 /**
- * Allocates audio_buffer_t struct with empty fields. To be freed by user
+ * Allocates audio_buffer_t struct with empty fields. To be freed by user.
  *
  * @return new audio_buffer_t struct
  */
 audio_buffer_t *audio_buffer_init();
+
+/**
+ * Frees audio_buffer_t struct and all associated fields.
+ *
+ * @param buffer                the struct to be freed
+ */
+void audio_buffer_free(audio_buffer_t *buffer);
 
 /**
  * Extracts the waveform data from audio file. If multiple channels, the waveforms are interleaved (i.e. to be read as left_amplitude followed by right_amplitude

@@ -9,11 +9,16 @@
 #include "input-handler.h"
 
 audio_buffer_t *audio_buffer_init() {
-    audio_buffer_t *out = calloc(1, sizeof(audio_buffer_t));
+    audio_buffer_t *out = malloc(1 * sizeof(audio_buffer_t));
 
     return out;
 }
 
+void audio_buffer_free(audio_buffer_t *buffer) {
+    free(buffer->samples_float);
+    free(buffer->samples_double);
+    free(buffer);
+}
 
 int sample_file(char *file_name, audio_buffer_t *audio_buffer) {
     //  DECODER INIT
