@@ -8,6 +8,7 @@
 
 const uint64_t FFTW_WINDOW = 44100;
 const char *NOTE_NAMES[] = {"A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab"};
+const double MIN_ENERGY = 40.0;
 
 int main(int argc, char **argv) {
     if (argc < 2) {
@@ -26,11 +27,11 @@ int main(int argc, char **argv) {
 
     extract_freq_window(audio_buffer->samples_double, audio_buffer->frame_count,
             FFTW_WINDOW, freq);
-    denoise_freq(freq, 5, nbins);
-    remove_harmonics(freq, 0, (double) (audio_buffer->sample_rate), nbins, 0.5, 0.0);
+    denoise_freq(freq, 5, nbins, MIN_ENERGY);
+    remove_harmonics(freq, 0, (double) (audio_buffer->sample_rate), nbins, 0.2, 0.0, 0.2);
     double *notes = freq_to_note_arr(freq, 0, (double) nbins, nbins, 0.3, 88);
 
-    /* Print frequency data in a human readable format */
+    /* Print frequency/note data in a human readable format */
     printf("FRAME COUNT: %ld\n", audio_buffer->frame_count);
     printf("CHANNEL COUNT: %d\n", audio_buffer->channel_count);
     printf("SAMPLE RATE: %d\n", audio_buffer->sample_rate);
@@ -38,18 +39,15 @@ int main(int argc, char **argv) {
     for (int i = 0; i < 88; i++) {
         if (notes[i] == 0.0) continue;
         double frequency = 440.0 * pow(2.0, (i - 48.0) / 12);
-        printf("Note: %8s \t Note num: %3d \t Frequency: %4.4f \t Amplitude: %f\n", NOTE_NAMES[i % 12], i, frequency,  notes[i]);
+        printf("Note: %8s \t ", NOTE_NAMES[i % 12]);
+        printf("Note num: %3d \t ", i);
+        printf("Frequency: %4.4f \t ", frequency);
+        printf("Amplitude: %4.4f \n", notes[i]);
+
+        //printf("Note: %8s \t Note num: %3d \t Frequency: %4.4f \t Amplitude: %f\n", NOTE_NAMES[i % 12], i, frequency,  notes[i]);
     }
-    /*
-       for (uint64_t i = 0; i < nbins; i++) {
-    //if (freq[i] == 0.0) continue;
-    int note_val = freq_to_note(i, 0.3, NULL);
-    if (note_val < 0) continue;
-    //printf("%f %f\n", (double) i, freq[i]);
-    //printf("Hz: %f \t Amplitude: %f \t Note: %s\n", (double) i, freq[i], NOTE_NAMES[note_val % 12]);
-    //printf("Hz: %f \t Amplitude: %f \t Note: %s\n", (double) i, freq[i], note_val < 0 ? "unknown" : NOTE_NAMES[note_val % 12]);
-    }
-    */
+
+    free(audio_buffer);
 
     return 0;
 }
