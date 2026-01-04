@@ -62,7 +62,8 @@ void remove_harmonics(double *freq, double freq_min, double freq_max, uint64_t
 
 /**
  * Extracts the frequencies and phases of the signal. Requires that freq and
- * phase are of the proper length, not checked in this function
+ * phase are of the proper length, not checked in this function. Modifies freq
+ * in place
  *
  * @param samples       array of samples
  * @param length        number of elements in samples array
@@ -71,7 +72,6 @@ void remove_harmonics(double *freq, double freq_min, double freq_max, uint64_t
  * @param freq          pointer to output array, to be updated with freq
  */
 void extract_freq_window(double *samples, uint64_t length, uint64_t
-        window_size,
-        double *freq);
+        window_size, double *freq);
 
 #endif //   FREQ_ANALYSIS_H_

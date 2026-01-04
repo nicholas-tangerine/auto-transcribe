@@ -58,9 +58,9 @@ void remove_harmonics(double *freq, double freq_min, double freq_max, uint64_t
         freq_len, double real_weight, double fake_weight, double alpha) {
     for (uint64_t i = 0; i < freq_len; i++) {
         double base_freq = freq_min + i * (freq_max - freq_min) / (freq_len - 1);
-        int base_amplitude = freq[(int) round(base_freq)];
+        double base_amplitude = freq[(int) round(base_freq)];
 
-        for (int u = 2; u < 20; u++) {      // harmonics
+        for (int u = 2; u < 20; u++) {      // for u in harmonics
             uint64_t check_freq_min = (int) round(base_freq * u) * (1 - alpha);
             uint64_t check_freq_max = (int) round(base_freq * u) * (1 + alpha);
             if (check_freq_min >= freq_len) break;
