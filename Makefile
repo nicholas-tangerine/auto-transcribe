@@ -5,12 +5,12 @@ LDFLAGS 	:= -lm -lfftw3
 SRC_DIR 	:= src
 BUILD_DIR 	:= build
 
-SRC     	:= main.c \
-			   	   miniaudio.c \
-				   input-handler.c \
-				   freq-analysis.c \
-				   music-analysis.c \
-				   pitch-tracker.c
+SRC     	:= main.c 				\
+			   miniaudio.c 			\
+			   input-handler.c 		\
+			   freq-analysis.c 		\
+			   music-analysis.c 	\
+			   pitch-tracker.c
 OBJ 		:= $(SRC:%.c=$(BUILD_DIR)/%.o)
 TARGET  	:= main
 
