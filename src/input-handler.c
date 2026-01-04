@@ -64,8 +64,8 @@ int sample_file(char *file_name, audio_buffer_t *audio_buffer) {
 }
 
 int convert_to_mono(audio_buffer_t *audio_buffer) {
-    float *new_float = calloc(audio_buffer->frame_count, sizeof(float));
-    double *new_double = calloc(audio_buffer->frame_count, sizeof(double));
+    float *new_float = malloc(audio_buffer->frame_count * sizeof(float));
+    double *new_double = malloc(audio_buffer->frame_count * sizeof(double));
 
     for (uint64_t i = 0; i < audio_buffer->frame_count; i++) {
         float sum_float = 0.0f;
