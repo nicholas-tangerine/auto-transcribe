@@ -6,9 +6,12 @@
 #include "freq-analysis.h"
 #include "music-analysis.h"
 
-const uint64_t FFTW_WINDOW = 44100;
 const char *NOTE_NAMES[] = {"A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab"};
-const double MIN_ENERGY = 40.0;
+
+const uint64_t FFTW_WINDOW_SIZE = 44100;
+const uint64_t FFTW_WINDOW_HOP = 2048;
+
+const double NOTE_MIN_ENERGY = 1e-6;
 
 int main(int argc, char **argv) {
     if (argc < 2) {
@@ -22,29 +25,45 @@ int main(int argc, char **argv) {
     convert_to_mono(audio_buffer);
 
     /* Extract and denoise frequencies from the first second of the mp3 */
-    uint64_t nbins = (FFTW_WINDOW >> 1) + 1;
-    double *freq = malloc(sizeof(double) * nbins);
+    uint64_t freq_len = (FFTW_WINDOW_SIZE >> 1) + 1;
+    double *freq = malloc(sizeof(double) * freq_len);
 
-    extract_freq_window(audio_buffer->samples_double, audio_buffer->frame_count,
-            FFTW_WINDOW, freq);
-    denoise_freq(freq, 5, nbins, MIN_ENERGY);
-    remove_harmonics(freq, 0, (double) (audio_buffer->sample_rate), nbins, 0.2, 0.0, 0.2);
-    double *notes = freq_to_note_arr(freq, 0, (double) nbins, nbins, 0.3, 88);
+    /* Main loop */
+    uint64_t samples_offset = 0;
+    for (uint64_t frame = 0; frame < audio_buffer->frame_count - FFTW_WINDOW_SIZE; frame++) {
+        double freq_min = 0.0;
+        double freq_max = (double) (audio_buffer->sample_rate >> 1);
+        extract_freq_window(
+            audio_buffer->samples_double + samples_offset,  // ptr to samples
+            audio_buffer->frame_count - samples_offset,     // number of items until end of samples
+            FFTW_WINDOW_SIZE,                               // size of array to fft
+            freq                                            // fft output
+        );
+        denoise_freq(
+            freq,                                           // freq domain representation of window        
+            5,                                              // sliding window size
+            freq_len,                                          // length of freq array
+            NOTE_MIN_ENERGY                                 // lowest energy needed to be note
+        );
+        remove_harmonics(
+            freq,                                           // freq domain representation of window
+            freq_min,                                       // smallest frequency captured
+            freq_max,                                       // highest frequency captured
+            freq_len,                                       // length of freq array
+            0.2,                                            // how loud (%) to be a real note
+            0.0,                                            // harmonic downweight factor
+            0.2                                             // something like size of neighborhood to check
+        );
+        double *notes = freq_to_note_arr(freq, freq_min, freq_max, freq_len, 0.3, 88);
+        for (int i = 0; i < 88; i++) {
+            if (notes[i] == 0.0) continue;
+            double curr_freq = 440.0 * pow(2, (double) (i - 48) / 12);
+            printf("Note: %8s \t Note num: %3d \t Freq: %5.5f \t Amplitude: %f\n", NOTE_NAMES[i % 12], i, curr_freq, notes[i]);
+        }
+        free(notes);
 
-    /* Print frequency/note data in a human readable format */
-    printf("FRAME COUNT: %ld\n", audio_buffer->frame_count);
-    printf("CHANNEL COUNT: %d\n", audio_buffer->channel_count);
-    printf("SAMPLE RATE: %d\n", audio_buffer->sample_rate);
-
-    for (int i = 0; i < 88; i++) {
-        if (notes[i] == 0.0) continue;
-        double frequency = 440.0 * pow(2.0, (i - 48.0) / 12);
-        printf("Note: %8s \t ", NOTE_NAMES[i % 12]);
-        printf("Note num: %3d \t ", i);
-        printf("Frequency: %4.4f \t ", frequency);
-        printf("Amplitude: %4.4f \n", notes[i]);
-
-        //printf("Note: %8s \t Note num: %3d \t Frequency: %4.4f \t Amplitude: %f\n", NOTE_NAMES[i % 12], i, frequency,  notes[i]);
+        samples_offset += FFTW_WINDOW_HOP;
+        break;
     }
 
     free(audio_buffer);
